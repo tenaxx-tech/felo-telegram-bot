@@ -6,6 +6,7 @@ import os
 import tempfile
 import time
 import base64
+import sys
 from typing import Optional
 
 import aiohttp
@@ -24,9 +25,7 @@ from telegram.ext import (
 import telegram
 
 from config import TELEGRAM_TOKEN, FELO_API_KEY, FELO_API_URL, REPLICATE_API_TOKEN, OPENAI_API_KEY
-import sys
-print("🔵 Бот начал инициализацию...")
-sys.stdout.flush()
+
 # Устанавливаем токен Replicate
 os.environ["REPLICATE_API_TOKEN"] = REPLICATE_API_TOKEN
 
@@ -168,13 +167,13 @@ async def generate_image_from_text(prompt: str) -> tuple[io.BytesIO, str]:
         response = requests.get(original_url)
         response.raise_for_status()
 
-        # Открываем и сжимаем сильнее
+        # Открываем и сжимаем
         img = Image.open(io.BytesIO(response.content))
-        max_size = 1024  # уменьшили с 1280 до 1024
+        max_size = 1024  # ограничим размер по большей стороне
         if img.width > max_size or img.height > max_size:
             img.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
 
-        # Сохраняем сжатое изображение в BytesIO с качеством 75 (было 85)
+        # Сохраняем сжатое изображение в BytesIO
         output_bytes = io.BytesIO()
         img.save(output_bytes, format='JPEG', quality=75, optimize=True)
         output_bytes.seek(0)
@@ -653,8 +652,6 @@ async def handle_image_generation(update: Update, context: ContextTypes.DEFAULT_
 
         # Отправляем сжатое фото с подписью, содержащей ссылку на оригинал
         caption = f"🖼️ Готово!\n🔗 [Оригинал в полном размере]({original_url})"
-
-        # Увеличиваем таймауты до 120 секунд
         await update.message.reply_photo(
             photo=compressed_image,
             caption=caption,
@@ -960,8 +957,10 @@ async def handle_upscale_image(update: Update, context: ContextTypes.DEFAULT_TYP
 # Запуск
 # ------------------------------------------------------------
 def main():
-     print("🟢 Запуск main()...")
+    # Отладочные сообщения
+    print("🟢 Запуск main()...")
     sys.stdout.flush()
+
     # Проверка наличия ключей
     if not TELEGRAM_TOKEN or TELEGRAM_TOKEN == "ВАШ_ТОКЕН_ТЕЛЕГРАМ":
         logger.error("TELEGRAM_TOKEN не задан!")
@@ -1014,8 +1013,9 @@ def main():
     app.add_handler(CommandHandler('help', help_command))
 
     logger.info("Бот с новыми моделями запущен...")
+    print("✅ Бот запущен, начинаю polling...")
+    sys.stdout.flush()
     app.run_polling()
 
 if __name__ == "__main__":
-
     main()
