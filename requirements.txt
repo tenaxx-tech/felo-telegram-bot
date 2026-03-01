@@ -2,3 +2,4 @@ python-telegram-bot
 aiohttp
 replicate
 requests
+Pillow
