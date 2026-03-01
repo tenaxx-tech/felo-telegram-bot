@@ -24,7 +24,9 @@ from telegram.ext import (
 import telegram
 
 from config import TELEGRAM_TOKEN, FELO_API_KEY, FELO_API_URL, REPLICATE_API_TOKEN, OPENAI_API_KEY
-
+import sys
+print("🔵 Бот начал инициализацию...")
+sys.stdout.flush()
 # Устанавливаем токен Replicate
 os.environ["REPLICATE_API_TOKEN"] = REPLICATE_API_TOKEN
 
@@ -958,6 +960,8 @@ async def handle_upscale_image(update: Update, context: ContextTypes.DEFAULT_TYP
 # Запуск
 # ------------------------------------------------------------
 def main():
+     print("🟢 Запуск main()...")
+    sys.stdout.flush()
     # Проверка наличия ключей
     if not TELEGRAM_TOKEN or TELEGRAM_TOKEN == "ВАШ_ТОКЕН_ТЕЛЕГРАМ":
         logger.error("TELEGRAM_TOKEN не задан!")
@@ -1013,4 +1017,5 @@ def main():
     app.run_polling()
 
 if __name__ == "__main__":
+
     main()
