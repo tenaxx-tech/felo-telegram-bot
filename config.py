@@ -9,3 +9,6 @@ FELO_API_URL = os.getenv("FELO_API_URL", "https://openapi.felo.ai/v2/chat")
 
 # Replicate
 REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", "YOUR_REPLICATE_TOKEN")
+
+# OpenAI (Sora 2) — опционально, можно оставить None
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", None)
